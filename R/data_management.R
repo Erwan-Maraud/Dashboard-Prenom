@@ -8,6 +8,7 @@ library(plotly)
 library(shiny)
 library(bslib)
 library(shinyWidgets)
+library(bsicons)
 
 # 2. Chargement des données -----------------------------------------------
 prenom <- arrow::read_parquet("data/prenoms-2024.parquet")

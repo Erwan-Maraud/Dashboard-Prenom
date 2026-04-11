@@ -50,9 +50,14 @@ server <- function(input, output, session) {
     
     return(df)
   })
-
-  output$test <- renderTable({
-    data.frame(Département = unique(prenom_filtered()$departement))
+  
+  # ------ GENERAL -------------------------------------------------------------
+  
+  ## ---- Top 10 ----
+  output$plot_top10_prenom <- renderPlotly({
+    plot_top10_prenom(prenom_filtered())
   })
+  
+  ## ---- Naissance ----
 }
 
