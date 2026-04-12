@@ -52,29 +52,6 @@ ui <- page_navbar(
   
   # ------ GENERAL -------------------------------------------------------------
   
-  # nav_panel(
-  #   title = "Général",
-  #   layout_column_wrap(
-  #     height="1px",
-  #     value_box(
-  #       title = "Nombre de naissance",
-  #       value = 100,
-  #       showcase = bsicons::bs_icon("person-plus")
-  #     ),
-  #     value_box(
-  #       title = "Nombre de prénoms différents attribués",
-  #       value = 100,
-  #       showcas = bsicons::bs_icon("tags")
-  #     )
-  #   ),
-  #   card(
-  #     card_header("Top 10 des prénoms attribués"),
-  #     card_body(
-  #       plotlyOutput("plot_top10_prenom")
-  #     )
-  #   )
-  # ),
-  
   nav_panel(
     title = "Général",
     navset_card_underline(
@@ -109,11 +86,36 @@ ui <- page_navbar(
         )
       ),
       nav_panel(
-        title = "Nombre de prénoms différents"
+        title = "Nombre de prénoms différents",
+        layout_column_wrap(
+          height="100px",
+          value_box(
+            title = "Nombre de prénoms différents H/F",
+            value = textOutput("nb_prenom_diff_tot"),
+            showcase = bsicons::bs_icon("person-plus")
+          ),
+          value_box(
+            title = "Nombre de prénoms féminins différents",
+            value = textOutput("nb_prenom_diff_femme"),
+            showcase = bsicons::bs_icon("gender-female")
+          ),
+          value_box(
+            title = "Nombre de prénoms masculins différents",
+            value = textOutput("nb_prenom_diff_homme"),
+            showcase = bsicons::bs_icon("gender-male")
+          )
+        ),
+        card(
+          card_header("Évolution du nombre de prénoms différents attribués"),
+          card_body(plotlyOutput("plot_evo_nb_prenom_diff")),
+          full_screen = T
+        )
       ),
       nav_panel(
         title = "Tableau de données",
-        card("ici un tableau des prénoms avec un colonne rang, prénom masculin et féminin")
+        card(
+          DT::DTOutput("table_prenoms")
+        )
       )
     )
   ),

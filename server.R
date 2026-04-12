@@ -86,5 +86,40 @@ server <- function(input, output, session) {
   output$plot_evo_naissance <- renderPlotly({
     plot_nombre_naissance_sexe(data_filtered = prenom_filtered())
   })
+  
+  ## ---- Prénoms différents ----
+  output$nb_prenom_diff_tot <- renderText({
+    format_chiffre(get_nombre_prenom_diff(prenom_filtered())$n_total)
+  })
+  
+  output$nb_prenom_diff_femme <- renderText({
+    res <- get_nombre_prenom_diff(prenom_filtered())
+    part <- 100 * res$n_feminin / res$n_total
+    
+    paste0(
+      format_chiffre(res$n_feminin), 
+      " (", format_chiffre(part, digits = 1), " %)"
+    )
+  })
+  
+  output$nb_prenom_diff_homme <- renderText({
+    res <- get_nombre_prenom_diff(prenom_filtered())
+    part <- 100 * res$n_masculin / res$n_total
+    
+    paste0(
+      format_chiffre(res$n_masculin), 
+      " (", format_chiffre(part, digits = 1), " %)"
+    )
+  })
+  
+  output$plot_evo_nb_prenom_diff <- renderPlotly({
+    plot_nombre_prenom_diff_sexe(data_filtered = prenom_filtered())
+  })
+  
+  ## ---- Tableaux de données ----
+  output$table_prenoms <- DT::renderDT({
+    build_tableau_prenom(data_filtered = prenom_filtered())
+  })
+  
 }
 

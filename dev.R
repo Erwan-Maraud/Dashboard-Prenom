@@ -1,4 +1,5 @@
 
+# To do list -------------------------------------------------------------------
 # Data : 
 # Nombre de naissance par an
 
@@ -20,6 +21,7 @@
 periode1 <- 1900
 periode2 <- 1910
 input_geo = "France entière"
+input_sexe = "Masculin"
 input_sexe = "Tous"
 
 # Intialisation 
@@ -34,8 +36,9 @@ if (input_sexe != "Tous") {
 prenom_filtered <- prenom_filtered %>% 
   filter(periode >= periode1 & periode <= periode2)
 
-#-------------------------------------------------------------------------------
+# Paramètres des fonctions -----------------------------------------------------
+data_filtered = prenom_filtered
 
-
+# Développement ----------------------------------------------------------------
 
 

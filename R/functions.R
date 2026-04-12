@@ -131,3 +131,137 @@ plot_nombre_naissance_sexe <- function(data_filtered) {
       )
     )
 }
+
+# Nombre de prénoms différents -------------------------------------------------
+
+get_nombre_prenom_diff <- function(data_filtered) {
+  
+  # Description : Cette fonction renvoie une liste avec le nombre de prénoms différents
+  # total du dataset en paramètre pour les prénoms de sexe masculin, féminin et 
+  # les deux réunis
+  
+  sums <- data_filtered %>% 
+    group_by(sexe) %>% 
+    summarise(n = n_distinct(prenom), .groups = "drop")
+  
+  list(
+    n_masculin = sums$n[sums$sexe == "Masculin"] %>% {if(length(.) == 0) 0 else .},
+    n_feminin = sums$n[sums$sexe == "Féminin"]  %>% {if(length(.) == 0) 0 else .},
+    n_total = sum(sums$n)
+  ) 
+}
+
+plot_nombre_prenom_diff_sexe <- function(data_filtered) {
+  
+  # Description : Cette fonction calcul le nombre de prénoms différents attribué
+  # par sexe et par année et trace l'évolution sur la période disponible dans 
+  # le dataset filtré en paramètre
+  
+  # Couleurs 
+  couleur_sexe <- c("Masculin" = "#1F77B4", "Féminin" ="lightpink")
+  # Sélection des données
+  data_graph <- data_filtered %>% 
+    group_by(periode, sexe) %>% 
+    summarise(n_prenom_diff = n_distinct(prenom), .groups = "drop") %>% 
+    mutate(
+      hover_label = paste0("Sexe : ", sexe, "<br>",
+                           "Année : ", periode, "<br>",
+                           "Nombre de prénoms différents : ", format_chiffre(n_prenom_diff))
+    ) %>% 
+    arrange(periode, sexe)
+  
+  # Graphique
+  plot_ly(
+    data = data_graph, 
+    x = ~periode,
+    y = ~n_prenom_diff,
+    color = ~sexe,
+    colors = couleur_sexe,
+    type = 'scatter',
+    mode = 'lines+markers',
+    customdata = ~hover_label,
+    hovertemplate = "%{customdata}<extra></extra>"
+  ) %>% 
+    layout(
+      xaxis = list(title = "Année"),
+      yaxis = list(title = "Nombre de prénoms différents", 
+                   range = c(0, max(data_graph$n_prenom_diff) * 1.1)
+      )
+    )
+}
+
+# Tableau des prénoms ----------------------------------------------------------
+
+build_tableau_prenom <- function(data_filtered) {
+  
+  # Description : Cette fonction permet la construction d'un tableau de prénoms 
+  # avec le rang, les effectifs des prénoms attribués sur la période du dataset
+  # en paramètres et gère automatiquement les colonnes en fonction du sexe 
+  # sélectionné dans les filtres
+  
+  # Tableau prénoms masculins
+  tab_homme <- data_filtered %>% 
+    filter(sexe == "Masculin") %>% 
+    group_by(sexe, prenom) %>%
+    summarise(nombre = sum(valeur, na.rm = TRUE), .groups = "drop") %>%
+    arrange(desc(nombre), .by_group = TRUE) %>%
+    mutate(
+      prenom_masculin = prenom,
+      rang = row_number(),
+      part = round(100 * nombre / sum(nombre, na.rm = T), 1),
+      nombre_masculin_label = paste0(format_chiffre(nombre), " (",
+                                     format_chiffre(part, digits = 1), " %)"),
+    ) %>% 
+    select(rang, prenom_masculin, nombre_masculin_label)
+  
+  # Tableau prénoms féminins
+  tab_femme <- data_filtered %>% 
+    filter(sexe == "Féminin") %>% 
+    group_by(sexe, prenom) %>%
+    summarise(nombre = sum(valeur, na.rm = TRUE), .groups = "drop") %>%
+    arrange(desc(nombre), .by_group = TRUE) %>%
+    mutate(
+      prenom_feminin = prenom,
+      rang = row_number(),
+      part = round(100 * nombre / sum(nombre, na.rm = T), 1),
+      nombre_feminin_label = paste0(format_chiffre(nombre), " (",
+                                    format_chiffre(part, digits = 1), " %)"),
+    ) %>% 
+    select(rang, prenom_feminin, nombre_feminin_label)
+  
+  # Si les deux sexes sont sélectionnés alors on les fusionnes
+  if (length(unique(data_filtered$sexe)) == 2) {
+    tab <- full_join(tab_homme, tab_femme, by = "rang") %>% arrange(rang)
+    noms_colonnes_tab <- c("Rang", "Masculin", "Effectifs", "Féminin", "Effectifs")
+  } else if (unique(data_filtered$sexe) == "Masculin") {
+    tab <- tab_homme %>% arrange(rang)
+    noms_colonnes_tab <- c("Rang", "Masculin", "Effectifs")
+  } else {
+    tab <- tab_femme %>% arrange(rang)
+    noms_colonnes_tab <- c("Rang", "Féminin", "Effectifs")
+  }
+  
+  dt <- datatable(
+    tab,
+    rownames = FALSE,
+    options = list(
+      pageLength = 50,
+      ordering = FALSE
+    ),
+    colnames = noms_colonnes_tab
+  ) %>% 
+    formatStyle(
+      "rang",
+      borderRight = "2px solid #ddd"
+    )
+  
+  if (length(unique(data_filtered$sexe)) == 2) {
+    dt <- dt %>% 
+      formatStyle(
+        "nombre_masculin_label",
+        borderRight = "2px solid #ddd"
+      )
+  }
+  
+  return(dt)
+}
