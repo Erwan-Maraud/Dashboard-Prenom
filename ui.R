@@ -85,31 +85,35 @@ ui <- page_navbar(
       nav_panel(
         title = "Naissances",
           layout_column_wrap(
-            height="10px",
+            height="100px",
             value_box(
               title = "Nombre de naissance H/F",
-              value = 100,
+              value = textOutput("nb_naissance_tot"),
               showcase = bsicons::bs_icon("person-plus")
             ),
             value_box(
               title = "Nombre de naissance F",
-              value = 100,
-              showcase = bsicons::bs_icon("tags")
+              value = textOutput("nb_naissance_femme"),
+              showcase = bsicons::bs_icon("gender-female")
             ),
             value_box(
               title = "Nombre de naissance H",
-              value = 100,
-              showcase = bsicons::bs_icon("tags")
+              value = textOutput("nb_naissance_homme"),
+              showcase = bsicons::bs_icon("gender-male")
             )
           ),
         card(
           card_header("Évolution du nombre de naissance"),
-          card_body("ici graphique"),
+          card_body(plotlyOutput("plot_evo_naissance")),
           full_screen = T
         )
       ),
       nav_panel(
         title = "Nombre de prénoms différents"
+      ),
+      nav_panel(
+        title = "Tableau de données",
+        card("ici un tableau des prénoms avec un colonne rang, prénom masculin et féminin")
       )
     )
   ),

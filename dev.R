@@ -7,7 +7,6 @@
  
 
 # Général :
-# 2. Nombre de naissance cette année / période
 # 3. Nombre de prénom distinct 
 # 4. Tableau des 50 prénoms les plus données / les plus rare + valeur
 
@@ -21,7 +20,7 @@
 periode1 <- 1900
 periode2 <- 1910
 input_geo = "France entière"
-input_sexe = "Masculin"
+input_sexe = "Tous"
 
 # Intialisation 
 prenom_filtered <- prenom
@@ -37,13 +36,6 @@ prenom_filtered <- prenom_filtered %>%
 
 #-------------------------------------------------------------------------------
 
-get_nombre_naissance <- function(data_filtered) {
-  
-  n <- data_filtered %>% 
-    group_by(geographie) %>% 
-    summarise(n_naissance = sum(valeur, na.rm = T)) %>% 
-    pull(n_naissance)
-  
-  return(n)
-}
+
+
 

@@ -59,5 +59,32 @@ server <- function(input, output, session) {
   })
   
   ## ---- Naissance ----
+  output$nb_naissance_tot <- renderText({
+    format_chiffre(get_nombre_naissance(prenom_filtered())$n_naiss_total)
+  })
+  
+  output$nb_naissance_femme <- renderText({
+    res <- get_nombre_naissance(prenom_filtered())
+    part <- 100 * res$n_feminin / res$n_naiss_total
+    
+    paste0(
+      format_chiffre(res$n_feminin), 
+      " (", format_chiffre(part, digits = 1), " %)"
+    )
+  })
+  
+  output$nb_naissance_homme <- renderText({
+    res <- get_nombre_naissance(prenom_filtered())
+    part <- 100 * res$n_masculin / res$n_naiss_total
+    
+    paste0(
+      format_chiffre(res$n_masculin), 
+      " (", format_chiffre(part, digits = 1), " %)"
+    )
+  })
+  
+  output$plot_evo_naissance <- renderPlotly({
+    plot_nombre_naissance_sexe(data_filtered = prenom_filtered())
+  })
 }
 

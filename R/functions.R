@@ -76,15 +76,58 @@ plot_top10_prenom <- function(data_filtered) {
     )
 }
 
-
-# Nombre de naissance -----------------------------------------------------
+# Nombre de naissance ----------------------------------------------------------
 
 get_nombre_naissance <- function(data_filtered) {
   
-  n <- data_filtered %>% 
-    group_by(geographie) %>% 
-    summarise(n_naissance = sum(valeur, na.rm = T)) %>% 
-    pull(n_naissance)
+  # Description : Cette fonction renvoie une liste avec le nombre de naissances
+  # total du dataset en paramètre pour les prénoms de sexe masculin, féminin et 
+  # les deux réunis
   
-  return(n)
+  sums <- data_filtered %>% 
+    group_by(sexe) %>% 
+    summarise(n = sum(valeur, na.rm = TRUE), .groups = "drop")
+  
+  list(
+    n_masculin = sums$n[sums$sexe == "Masculin"] %>% {if(length(.) == 0) 0 else .},
+    n_feminin = sums$n[sums$sexe == "Féminin"]  %>% {if(length(.) == 0) 0 else .},
+    n_naiss_total = sum(sums$n)
+  )
+}
+
+plot_nombre_naissance_sexe <- function(data_filtered) {
+  
+  # Description : Cette fonction calcul le nombre de naissance par année et par 
+  # sexe et représente la courbe d'évolution pour le dataset en paramètre
+  
+  # Couleurs 
+  couleur_sexe <- c("Masculin" = "#1F77B4", "Féminin" ="lightpink")
+  # Sélection des données
+  data_graph <- data_filtered %>% 
+    group_by(periode, sexe) %>% 
+    summarise(n_naiss = sum(valeur, na.rm = T), .groups = "drop") %>% 
+    mutate(
+      hover_label = paste0("Sexe : ", sexe, "<br>",
+                           "Année : ", periode, "<br>",
+                           "Nombre de naissance : ", format_chiffre(n_naiss))
+    ) %>% 
+    arrange(periode, sexe)
+  # Graphique
+  plot_ly(
+    data = data_graph, 
+    x = ~periode,
+    y = ~n_naiss,
+    color = ~sexe,
+    colors = couleur_sexe,
+    type = 'scatter',
+    mode = 'lines+markers',
+    customdata = ~hover_label,
+    hovertemplate = "%{customdata}<extra></extra>"
+  ) %>% 
+    layout(
+      xaxis = list(title = "Année"),
+      yaxis = list(title = "Nombre de naissances", 
+                   range = c(0, max(data_graph$n_naiss) * 1.1)
+      )
+    )
 }
