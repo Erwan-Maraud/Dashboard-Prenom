@@ -74,9 +74,17 @@ prenom <- prenom %>%
     by = c("periode", "sexe", "region", "departement")
   )
 
-# Liste de prénoms différents par genre :
+# Liste des 300 prénoms les plus populaires par genre :
 liste_prenom <- prenom %>% 
-  distinct(prenom, sexe)
+  group_by(prenom, sexe) %>% 
+  summarise(valeur = sum(valeur, na.rm = T), .groups = "drop_last") %>% 
+  group_by(sexe) %>% 
+  arrange(desc(valeur)) %>% 
+  slice_head(n = 20) %>% 
+  ungroup() %>% 
+  pull(prenom)
+
+# liste_prenom <- prenom %>% distinct(sexe, prenom)
 
 # Ménage 
 rm(code_geo_departement, code_geo_region, prenom_group)

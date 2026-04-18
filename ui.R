@@ -3,6 +3,8 @@ ui <- page_navbar(
   
   title = "Attribution des Prénoms",
   
+  id = "nav",
+  
   # ------ THEME ---------------------------------------------------------------
   theme = bs_theme(
     version = 5,
@@ -22,6 +24,19 @@ ui <- page_navbar(
       value = c(2000, 2024),   
       step = 1,
       sep = ""
+    ),
+    
+    conditionalPanel(
+      condition = "input.nav == 'Analyse'",
+      
+      selectizeInput(
+        "prenom_analyse",
+        "Prénom",
+        choices = NULL,
+        options = list(
+          placeholder = "Taper un prénom..."
+        )
+      )
     ),
     
     ## ---- Région ----
@@ -47,7 +62,6 @@ ui <- page_navbar(
       choices = c("Tous", "Féminin", "Masculin"),
       selected = "Tous"
     )
-    
   ),
   
   # ------ GENERAL -------------------------------------------------------------
