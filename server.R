@@ -1,6 +1,7 @@
 
 server <- function(input, output, session) {
   
+  # Choix dynamique du département en fonction de la région sélectionné
   observeEvent(input$region, {
 
     if (input$region == "France entière") {
@@ -27,10 +28,25 @@ server <- function(input, output, session) {
     }
   })
   
+  # Choix de la sélection du prénom dynamique
+  observeEvent(
+    liste_prenom_pop(), 
+    {
+      updateSelectizeInput(
+        session,
+        "prenom_analyse",
+        choices = liste_prenom_pop(),
+        selected = character(0),
+        server = TRUE
+      )
+    }
+  )
+  
   # ------ FILTRES -------------------------------------------------------------
   
   prenom_filtered <- reactive({
     df <- prenom 
+    
     ## ---- Période ----
     df <- df %>% filter(periode >= input$periode[1] & periode <= input$periode[2])
     
@@ -121,5 +137,74 @@ server <- function(input, output, session) {
     build_tableau_prenom(data_filtered = prenom_filtered())
   })
   
+  # ------ ANALYSE -------------------------------------------------------------
+  
+  # Liste des prénoms dynamique
+  liste_prenom_pop <- reactive({
+    
+    req(prenom_filtered())
+    
+    prenom_filtered() %>% group_by(prenom) %>% 
+      summarise(valeur = sum(valeur, na.rm = T), .groups = "drop") %>% 
+      arrange(desc(valeur)) %>% slice_head(n = 500) %>% pull(prenom)
+    
+  })
+  
+  # Sélection d'un prénom aléatoire
+  observeEvent(input$random_prenom, {
+    
+    prenoms <- liste_prenom_pop()
+    req(length(prenoms) > 0)
+    choix <- sample(prenoms, 1)
+    
+    updateSelectizeInput(
+      session,
+      "prenom_analyse",
+      choices = prenoms,
+      selected = choix,
+      server = TRUE
+    )
+  })
+  
+  # ---- Filtres du prénom ----
+  
+  prenom_selected <- reactive({
+    req(input$prenom_analyse)
+    prenom_filtered() %>% filter(prenom == input$prenom_analyse)
+  })
+  
+  ## ---- Évolution ----
+  
+  output$plot_evo_prenom <- renderPlotly({
+    req(input$prenom_analyse)
+    plot_nombre_naissance_sexe(data_filtered = prenom_selected())
+  })
+  
+  output$prenom_affiche <- renderText({
+    
+    if (is.null(input$prenom_analyse) || input$prenom_analyse == "") {
+      "Veuillez sélectionner un prénom"
+    } else {
+      input$prenom_analyse
+    }
+    
+  })
+  
+  output$nb_naiss_prenom_analyse <- renderText({
+    req(input$prenom_analyse)
+    format_chiffre(get_nombre_naissance(prenom_selected())$n_naiss_total)
+  })
+  
+  # output$best_rang_prenom_analyse <- renderText({
+  #   req(input$prenom_analyse)
+  #   res <- get_best_rang(data_prenom_selected = prenom_selected())
+  #   
+  #   paste0(format_chiffre(res$best_rang), " pour l'année : ", res$best_annee)
+  # })
+
+  
+  # ------ TESTS ---------------------------------------------------------------
+  
+
 }
 

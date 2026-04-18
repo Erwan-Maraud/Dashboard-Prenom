@@ -11,6 +11,8 @@ library(shinyWidgets)
 library(bsicons)
 library(DT)
 
+source("R/functions.R")
+
 # 2. Chargement des données -----------------------------------------------
 prenom <- arrow::read_parquet("data/prenoms-2024.parquet")
 
@@ -58,6 +60,15 @@ prenom <- prenom %>%
     region = ifelse(geographie == "F", "Toutes", region)
   ) 
 
+# # Calcul du rang du prénom par an, par région, département et par sexe
+# prenom <- prenom %>%
+#   group_by(prenom, periode, sexe, niveau_geographique, geographie, departement, region) %>%
+#   summarise(valeur = sum(valeur, na.rm = TRUE), .groups = "drop") %>%
+#   group_by(periode, sexe, niveau_geographique, geographie, departement, region) %>%
+#   arrange(desc(valeur), .by_group = TRUE) %>%
+#   mutate(rang = row_number()) %>%
+#   ungroup()
+
 # Calcul du nombre d'attribution de prénom par an, par région, par département et par sexe
 prenom_group <- prenom %>% 
   group_by(periode, sexe, region, departement) %>% 
@@ -73,18 +84,6 @@ prenom <- prenom %>%
     prenom_group, 
     by = c("periode", "sexe", "region", "departement")
   )
-
-# Liste des 300 prénoms les plus populaires par genre :
-liste_prenom <- prenom %>% 
-  group_by(prenom, sexe) %>% 
-  summarise(valeur = sum(valeur, na.rm = T), .groups = "drop_last") %>% 
-  group_by(sexe) %>% 
-  arrange(desc(valeur)) %>% 
-  slice_head(n = 20) %>% 
-  ungroup() %>% 
-  pull(prenom)
-
-# liste_prenom <- prenom %>% distinct(sexe, prenom)
 
 # Ménage 
 rm(code_geo_departement, code_geo_region, prenom_group)

@@ -1,12 +1,10 @@
 
 # To do list -------------------------------------------------------------------
-# Data : 
-# Nombre de naissance par an
 
-# # Analyse :
-# Sidebar pour la page analyse :
-# Sidebar général + choix du prénom + option aléatoire
- 
+# Analyse :
+# Liste de prénom dynamique
+# Sidebar : option aléatoire
+
 # Comparaison de 2 prénoms
 
 # Fonctionalité 
@@ -14,6 +12,13 @@
 # Ajouter signification du prénom 
 # Ajouter option sur l'origine du prénom
 # Carte France avec popularité du prénom 
+
+# A faire :
+# Page info -> insee
+# data managment des accents -> kevin = kévin
+# ajouté le rang dans l'évo par prénom 
+# Readme
+# origine (france, américaine, + évolution par origine)
 
 # Logique filtrage partie serveur ----------------------------------------------
 periode1 <- 1900
@@ -36,6 +41,10 @@ prenom_filtered <- prenom_filtered %>%
 
 # Paramètres des fonctions -----------------------------------------------------
 data_filtered = prenom_filtered
+
+prenom_selected <- data_filtered %>% 
+  filter(prenom == "Simon") %>% 
+  mutate(rang = sample(1:200, n(), replace = TRUE))
 
 # Développement ----------------------------------------------------------------
 

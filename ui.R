@@ -4,6 +4,7 @@ ui <- page_navbar(
   title = "Attribution des Prénoms",
   
   id = "nav",
+  selected = "Analyse",
   
   # ------ THEME ---------------------------------------------------------------
   theme = bs_theme(
@@ -11,6 +12,15 @@ ui <- page_navbar(
     bootswatch = "lux"
   ),
   
+  ## ---- CSS ----
+  header = tags$style(HTML("
+  
+      .btn-random:active {
+        transform: scale(0.95);
+      }
+  
+    ")),
+
   # ------ SIDEBAR -------------------------------------------------------------
   sidebar = sidebar(
     title = "Filtres",
@@ -29,12 +39,15 @@ ui <- page_navbar(
     conditionalPanel(
       condition = "input.nav == 'Analyse'",
       
+      ### ---- Prénom ----
       selectizeInput(
-        "prenom_analyse",
-        "Prénom",
+        inputId = "prenom_analyse",
+        label = "Prénom",
         choices = NULL,
+        multiple = FALSE,
         options = list(
-          placeholder = "Taper un prénom..."
+          placeholder = 'Taper un prénom...',
+          highlight = TRUE
         )
       )
     ),
@@ -61,7 +74,19 @@ ui <- page_navbar(
       label = "Sexe",
       choices = c("Tous", "Féminin", "Masculin"),
       selected = "Tous"
+    ),
+    
+    conditionalPanel(
+      condition = "input.nav == 'Analyse'",
+      
+      ### ---- Option prénom aléatoire ----
+      actionButton(
+        inputId = "random_prenom",
+        label = "Prénom aléatoire",
+        class = "btn-random"
+      )
     )
+    
   ),
   
   # ------ GENERAL -------------------------------------------------------------
@@ -142,7 +167,35 @@ ui <- page_navbar(
   nav_panel(
     title = "Analyse",
     navset_card_underline(
-      nav_panel("Évolution"),
+      nav_panel(
+        title = "Évolution",
+        layout_column_wrap(
+          height="100px",
+          value_box(
+            title = "Prénom sélectionné",
+            value = textOutput("prenom_affiche"),
+          ),
+          value_box(
+            title = "Nombre total de naissance sur la période",
+            value = textOutput("nb_naiss_prenom_analyse"),
+            showcase = bsicons::bs_icon("graph-up-arrow")
+          ),
+          value_box(
+            title = "Meilleur rang sur la période",
+            value = textOutput("best_rang_prenom_analyse"),
+            showcase = bsicons::bs_icon("trophy")
+          )
+        ),
+        card(
+          card_header("Évolution du nombre de naissance"),
+          card_body(plotlyOutput("plot_evo_prenom")),
+          full_screen = T
+        )
+      ),
+      nav_panel(
+        title = "Géographie",
+        
+      ),
       nav_panel("Signification"),
       nav_panel("Prénoms similaires"),
       nav_panel("Tableau de données")
