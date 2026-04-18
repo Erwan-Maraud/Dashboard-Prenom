@@ -3,7 +3,7 @@ server <- function(input, output, session) {
   
   # Choix dynamique du département en fonction de la région sélectionné
   observeEvent(input$region, {
-
+    
     if (input$region == "France entière") {
       updateSelectInput(
         session,
@@ -12,13 +12,13 @@ server <- function(input, output, session) {
         selected = "Tous"
       )
     } else {
-
+      
       departements <- code_geo %>%
         filter(region == input$region) %>%
         pull(departement) %>%
         unique() %>%
         sort()
-
+      
       updateSelectInput(
         session,
         "departement",
@@ -177,7 +177,7 @@ server <- function(input, output, session) {
   
   output$plot_evo_prenom <- renderPlotly({
     req(input$prenom_analyse)
-    plot_nombre_naissance_sexe(data_filtered = prenom_selected())
+    plot_nombre_naissance_sexe(data_filtered = prenom_selected(), affiche_rang = T)
   })
   
   output$prenom_affiche <- renderText({
@@ -195,16 +195,16 @@ server <- function(input, output, session) {
     format_chiffre(get_nombre_naissance(prenom_selected())$n_naiss_total)
   })
   
-  # output$best_rang_prenom_analyse <- renderText({
-  #   req(input$prenom_analyse)
-  #   res <- get_best_rang(data_prenom_selected = prenom_selected())
-  #   
-  #   paste0(format_chiffre(res$best_rang), " pour l'année : ", res$best_annee)
-  # })
-
+  output$best_rang_prenom_analyse <- renderText({
+    req(input$prenom_analyse)
+    res <- get_best_rang(data_prenom_selected = prenom_selected())
+    
+    paste0(format_chiffre(res$best_rang), " (", res$best_annee, ")")
+  })
+  
   
   # ------ TESTS ---------------------------------------------------------------
   
-
+  
 }
 

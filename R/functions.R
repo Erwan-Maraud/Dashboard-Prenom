@@ -92,24 +92,46 @@ get_nombre_naissance <- function(data_filtered) {
   )
 }
 
-plot_nombre_naissance_sexe <- function(data_filtered) {
-
+plot_nombre_naissance_sexe <- function(data_filtered, affiche_rang = F) {
+  
   # Description : Cette fonction calcul le nombre de naissance par année et par
   # sexe et représente la courbe d'évolution pour le dataset en paramètre
-
+  
   # Couleurs
   couleur_sexe <- c("Masculin" = "#1F77B4", "Féminin" ="lightpink")
+  
   # Sélection des données
   data_graph <- data_filtered %>%
     group_by(periode, sexe) %>%
-    summarise(n_naiss = sum(valeur, na.rm = T), .groups = "drop") %>%
-    mutate(
-      hover_label = paste0("Sexe : ", sexe, "<br>",
-                           "Année : ", periode, "<br>",
-                           "Nombre de naissance : ", format_chiffre(n_naiss))
+    summarise(
+      n_naiss = sum(valeur, na.rm = T),
+      rang = min(rang, na.rm = T), .groups = "drop"
     ) %>%
+    group_by(sexe) %>% 
+    complete(
+      periode = full_seq(periode, 1),
+      fill = list(n_naiss = 0) 
+    ) %>%
+    ungroup() %>% 
     arrange(periode, sexe)
-
+  
+  # Label en fonction du paramètre
+  if (affiche_rang) {
+    data_graph <- data_graph %>%
+      mutate(
+        hover_label = paste0("Rang : ", rang, "<br>",
+                             "Année : ", periode, "<br>",
+                             "Nombre de naissance : ", format_chiffre(n_naiss))
+      )} else {
+        data_graph <- data_graph %>%
+          mutate(
+            hover_label = paste0("Sexe : ", sexe, "<br>",
+                                 "Année : ", periode, "<br>",
+                                 "Nombre de naissance : ", format_chiffre(n_naiss))
+          )
+      }
+  
+  
   # Graphique
   plot_ly(
     data = data_graph,
@@ -129,60 +151,6 @@ plot_nombre_naissance_sexe <- function(data_filtered) {
       )
     )
 }
-
-# plot_nombre_naissance_sexe <- function(data_filtered, affiche_rang = F) {
-#   
-#   # Description : Cette fonction calcul le nombre de naissance par année et par 
-#   # sexe et représente la courbe d'évolution pour le dataset en paramètre
-#   
-#   # Couleurs 
-#   couleur_sexe <- c("Masculin" = "#1F77B4", "Féminin" ="lightpink")
-#   
-#   # Sélection des données
-#   data_graph <- data_filtered %>% 
-#     group_by(periode, sexe) %>% 
-#     summarise(
-#       n_naiss = sum(valeur, na.rm = T), .groups = "drop",
-#       rang = min(rang, na.rm = T)
-#     ) %>% 
-#     arrange(periode, sexe)
-#   
-#   # Label en fonction du paramètre
-#   if (affiche_rang) {
-#     data_graph <- data_graph %>% 
-#       mutate(
-#         hover_label = paste0("Rang : ", rang, "<br>",
-#                              "Année : ", periode, "<br>",
-#                              "Nombre de naissance : ", format_chiffre(n_naiss))
-#       )} else {
-#         data_graph <- data_graph %>% 
-#           mutate(
-#             hover_label = paste0("Sexe : ", sexe, "<br>",
-#                                  "Année : ", periode, "<br>",
-#                                  "Nombre de naissance : ", format_chiffre(n_naiss))
-#           )
-#       }
-#   
-#   
-#   # Graphique
-#   plot_ly(
-#     data = data_graph, 
-#     x = ~periode,
-#     y = ~n_naiss,
-#     color = ~sexe,
-#     colors = couleur_sexe,
-#     type = 'scatter',
-#     mode = 'lines+markers',
-#     customdata = ~hover_label,
-#     hovertemplate = "%{customdata}<extra></extra>"
-#   ) %>% 
-#     layout(
-#       xaxis = list(title = "Année"),
-#       yaxis = list(title = "Nombre de naissances", 
-#                    range = c(0, max(data_graph$n_naiss) * 1.1)
-#       )
-#     )
-# }
 
 # Nombre de prénoms différents -------------------------------------------------
 

@@ -20,7 +20,7 @@ ui <- page_navbar(
       }
   
     ")),
-
+  
   # ------ SIDEBAR -------------------------------------------------------------
   sidebar = sidebar(
     title = "Filtres",
@@ -102,24 +102,24 @@ ui <- page_navbar(
       ## ---- Naissances ----
       nav_panel(
         title = "Naissances",
-          layout_column_wrap(
-            height="100px",
-            value_box(
-              title = "Nombre de naissance H/F",
-              value = textOutput("nb_naissance_tot"),
-              showcase = bsicons::bs_icon("person-plus")
-            ),
-            value_box(
-              title = "Nombre de naissance F",
-              value = textOutput("nb_naissance_femme"),
-              showcase = bsicons::bs_icon("gender-female")
-            ),
-            value_box(
-              title = "Nombre de naissance H",
-              value = textOutput("nb_naissance_homme"),
-              showcase = bsicons::bs_icon("gender-male")
-            )
+        layout_column_wrap(
+          height="100px",
+          value_box(
+            title = "Nombre de naissance H/F",
+            value = textOutput("nb_naissance_tot"),
+            showcase = bsicons::bs_icon("person-plus")
           ),
+          value_box(
+            title = "Nombre de naissance F",
+            value = textOutput("nb_naissance_femme"),
+            showcase = bsicons::bs_icon("gender-female")
+          ),
+          value_box(
+            title = "Nombre de naissance H",
+            value = textOutput("nb_naissance_homme"),
+            showcase = bsicons::bs_icon("gender-male")
+          )
+        ),
         card(
           card_header("Évolution du nombre de naissance"),
           card_body(plotlyOutput("plot_evo_naissance")),
@@ -164,6 +164,7 @@ ui <- page_navbar(
   ),
   
   # ------ ANALYSE -------------------------------------------------------------
+  
   nav_panel(
     title = "Analyse",
     navset_card_underline(
@@ -200,6 +201,12 @@ ui <- page_navbar(
       nav_panel("Prénoms similaires"),
       nav_panel("Tableau de données")
     )
+  ),
+  
+  # ------ INFORMATIONS --------------------------------------------------------
+  
+  nav_panel(
+    title = "Informations"
   )
   
 )

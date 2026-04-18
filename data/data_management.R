@@ -4,31 +4,23 @@ library(dplyr)
 library(arrow)
 library(stringr)
 library(janitor)
-library(plotly)
-library(shiny)
-library(bslib)
-library(shinyWidgets)
-library(bsicons)
-library(DT)
-
-source("R/functions.R")
 
 # 2. Chargement des données -----------------------------------------------
-prenom <- arrow::read_parquet("data/prenoms-2024.parquet")
+prenom <- arrow::read_parquet("data/raw/prenoms-2024.parquet")
 
-code_geo_region <- read.csv("data/regions-france.csv") %>% 
+code_geo_region <- read.csv("data/raw/regions-france.csv") %>% 
   janitor::clean_names() %>% 
   rename(
     geographie = code_region,
     region = nom_region
-    ) %>% 
+  ) %>% 
   mutate(
     geographie = as.character(sprintf("%02d", geographie)),
     niveau_geographique = "REG",
     departement = "Tous"
   )
 
-code_geo_departement <- read.csv("data/departements-france.csv") %>% 
+code_geo_departement <- read.csv("data/raw/departements-france.csv") %>% 
   janitor::clean_names() %>% 
   rename(
     geographie = numero_departement
@@ -36,8 +28,9 @@ code_geo_departement <- read.csv("data/departements-france.csv") %>%
   mutate(
     niveau_geographique = "DEP",
     geographie = ifelse(geographie %in% c("1", "2", "3", "4", "5", "6", "7", "8", "9"),
-                        paste0("0", geographie), geographie)
-  ) 
+                        paste0("0", geographie), geographie),
+    region = ifelse(region == "Ile-de-France", "Île-de-France", region)
+  )
 
 code_geo <- rbind(code_geo_departement, code_geo_region)
 
@@ -60,14 +53,14 @@ prenom <- prenom %>%
     region = ifelse(geographie == "F", "Toutes", region)
   ) 
 
-# # Calcul du rang du prénom par an, par région, département et par sexe
-# prenom <- prenom %>%
-#   group_by(prenom, periode, sexe, niveau_geographique, geographie, departement, region) %>%
-#   summarise(valeur = sum(valeur, na.rm = TRUE), .groups = "drop") %>%
-#   group_by(periode, sexe, niveau_geographique, geographie, departement, region) %>%
-#   arrange(desc(valeur), .by_group = TRUE) %>%
-#   mutate(rang = row_number()) %>%
-#   ungroup()
+# Calcul du rang du prénom par an, par région, département et par sexe
+prenom <- prenom %>%
+  group_by(prenom, periode, sexe, niveau_geographique, geographie, departement, region) %>%
+  summarise(valeur = sum(valeur, na.rm = TRUE), .groups = "drop") %>%
+  group_by(periode, sexe, niveau_geographique, geographie, departement, region) %>%
+  arrange(desc(valeur), .by_group = TRUE) %>%
+  mutate(rang = row_number()) %>%
+  ungroup()
 
 # Calcul du nombre d'attribution de prénom par an, par région, par département et par sexe
 prenom_group <- prenom %>% 
@@ -76,7 +69,7 @@ prenom_group <- prenom %>%
     valeur_tot = sum(valeur, na.rm = T),
     nombre_prenom_distinct = n_distinct(prenom),
     .groups = "drop"
-    ) %>% 
+  ) %>% 
   arrange(periode, region)
 
 prenom <- prenom %>% 
@@ -87,3 +80,8 @@ prenom <- prenom %>%
 
 # Ménage 
 rm(code_geo_departement, code_geo_region, prenom_group)
+
+# 4. Enregistrement des données  ------------------------------------------
+
+saveRDS(prenom, "data/prenom_clean.rds", compress = FALSE)
+saveRDS(code_geo, "data/ref_geo.rds", compress = FALSE)
