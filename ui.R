@@ -55,10 +55,12 @@ ui <- page_navbar(
   nav_panel(
     title = "Général",
     navset_card_underline(
+      ## ---- Top 10 prénoms ----
       nav_panel(
         title = "Top 10 des prénoms attribués",
         plotlyOutput("plot_top10_prenom")
       ),
+      ## ---- Naissances ----
       nav_panel(
         title = "Naissances",
           layout_column_wrap(
@@ -85,6 +87,7 @@ ui <- page_navbar(
           full_screen = T
         )
       ),
+      ## ---- Prénoms différents ----
       nav_panel(
         title = "Nombre de prénoms différents",
         layout_column_wrap(
@@ -111,6 +114,7 @@ ui <- page_navbar(
           full_screen = T
         )
       ),
+      ## ---- Tableau de données ----
       nav_panel(
         title = "Tableau de données",
         card(
@@ -122,7 +126,13 @@ ui <- page_navbar(
   
   # ------ ANALYSE -------------------------------------------------------------
   nav_panel(
-    title = "Analyse"
+    title = "Analyse",
+    navset_card_underline(
+      nav_panel("Évolution"),
+      nav_panel("Signification"),
+      nav_panel("Prénoms similaires"),
+      nav_panel("Tableau de données")
+    )
   )
   
 )

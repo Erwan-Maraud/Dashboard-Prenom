@@ -74,5 +74,9 @@ prenom <- prenom %>%
     by = c("periode", "sexe", "region", "departement")
   )
 
+# Liste de prénoms différents par genre :
+liste_prenom <- prenom %>% 
+  distinct(prenom, sexe)
+
 # Ménage 
 rm(code_geo_departement, code_geo_region, prenom_group)

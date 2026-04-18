@@ -3,13 +3,11 @@
 # Data : 
 # Nombre de naissance par an
 
+# # Analyse :
 # Sidebar pour la page analyse :
 # Sidebar général + choix du prénom + option aléatoire
  
-
-# Général :
-# 3. Nombre de prénom distinct 
-# 4. Tableau des 50 prénoms les plus données / les plus rare + valeur
+# Comparaison de 2 prénoms
 
 # Fonctionalité 
 # Regrouper prénoms similaires
