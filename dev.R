@@ -47,31 +47,5 @@ prenom_selected <- data_filtered %>%
 
 # Développement ----------------------------------------------------------------
 
-# Les filtres
-prenom_selected_region <- prenom %>% 
-  filter(prenom == "Erwan") %>% 
-  filter(periode >= periode1 & periode <= periode2) %>% 
-  filter(niveau_geographique == "REG") 
-
-# Sélection des données 
-naissance_region <- prenom %>% 
-  filter(periode >= periode1 & periode <= periode2) %>% 
-  filter(niveau_geographique == "REG") %>% 
-  group_by(region) %>% 
-  summarise(
-    n_naiss_region = sum(valeur, na.rm = T),
-  ) %>% 
-  left_join(
-    prenom_selected_region %>%
-      group_by(region) %>% 
-      summarise(n_prenom_region = sum(valeur, na.rm = T), .groups = "drop"),
-    by = "region"
-  ) %>% 
-  mutate(
-    n_prenom_region = replace_na(n_prenom_region, 0),
-    part_region = 10000 * n_prenom_region / n_naiss_region
-  ) %>% 
-  arrange(desc(part_region))
-
 
 

@@ -14,6 +14,7 @@ library(DT)
 
 # 2. Chargement des fonctions ---------------------------------------------
 source("R/functions.R")
+source("R/cartographie.R")
 
 # 3. Chargement des données -----------------------------------------------
 prenom <- readRDS("data/prenom_clean.rds")

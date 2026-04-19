@@ -202,9 +202,56 @@ server <- function(input, output, session) {
     paste0(format_chiffre(res$best_rang), " (", res$best_annee, ")")
   })
   
+  ## ---- Géographie ----
+  
+  # Sélection des données par régions
+  nombre_naissance_regions <- reactive({
+    
+    # Nombre de naissance pour le prénom sélectionné
+    prenom_selected_region <- prenom %>% 
+      filter(periode >= input$periode[1] & periode <= input$periode[2]) %>% 
+      filter(niveau_geographique == "REG") %>% 
+      filter(prenom == input$prenom_analyse)
+    
+    if (input$sexe != "Tous") {
+      prenom_selected_region <- prenom_selected_region %>% filter(sexe == input$sexe)
+    }
+    
+    prenom_selected_region <- prenom_selected_region %>% 
+      group_by(region) %>% 
+      summarise(n_prenom_region = sum(valeur, na.rm = T), .groups = "drop")
+    
+    # Nombre de naissance par région
+    naissance_region <- prenom %>% 
+      filter(periode >= input$periode[1] & periode <= input$periode[2]) %>% 
+      filter(niveau_geographique == "REG") %>% 
+      group_by(region) %>% 
+      summarise(
+        n_naiss_region = sum(valeur, na.rm = T),
+      )
+    
+    nombre_naissance_regions <- naissance_region %>% 
+      left_join(
+        prenom_selected_region, by = "region"
+      ) %>% 
+      mutate(
+        n_prenom_region = replace_na(n_prenom_region, 0),
+        part_region = 10000 * n_prenom_region / n_naiss_region,
+        part_prenom = 100 * n_prenom_region / sum(n_prenom_region, na.rm = T)
+      ) %>% 
+      arrange(desc(part_region))
+    
+    return(nombre_naissance_regions)
+  })
+  
+  # Carte 
+  output$carte_prenom_region <- renderGirafe({
+    carte_part_prenom_region(nombre_naissance_regions = nombre_naissance_regions())
+  })
+  
   
   # ------ TESTS ---------------------------------------------------------------
   
-  
+
 }
 

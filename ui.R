@@ -168,6 +168,8 @@ ui <- page_navbar(
   nav_panel(
     title = "Analyse",
     navset_card_underline(
+      
+      ## ---- Évolution ----
       nav_panel(
         title = "Évolution",
         layout_column_wrap(
@@ -193,11 +195,22 @@ ui <- page_navbar(
           full_screen = T
         )
       ),
+      
+      ## ---- Géographie ----
       nav_panel(
         title = "Géographie",
-        
+        card(
+          card_header("Popularité du prénom par région : Fréquence du prénom 
+                      par région pour 10 000 naissances"),
+          card_body(girafeOutput("carte_prenom_region")),
+          full_screen = T
+        )
       ),
+      
+      ## ---- Signification ----
       nav_panel("Signification"),
+      
+      ## ---- Prénoms similaires ----
       nav_panel("Prénoms similaires"),
       nav_panel("Tableau de données")
     )
