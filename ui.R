@@ -105,23 +105,23 @@ ui <- page_navbar(
         layout_column_wrap(
           height="100px",
           value_box(
-            title = "Nombre de naissance H/F",
+            title = "Nombre de naissances H/F",
             value = textOutput("nb_naissance_tot"),
             showcase = bsicons::bs_icon("person-plus")
           ),
           value_box(
-            title = "Nombre de naissance F",
+            title = "Nombre de naissances F",
             value = textOutput("nb_naissance_femme"),
             showcase = bsicons::bs_icon("gender-female")
           ),
           value_box(
-            title = "Nombre de naissance H",
+            title = "Nombre de naissances H",
             value = textOutput("nb_naissance_homme"),
             showcase = bsicons::bs_icon("gender-male")
           )
         ),
         card(
-          card_header("Évolution du nombre de naissance"),
+          card_header("Évolution du nombre de naissances"),
           card_body(plotlyOutput("plot_evo_naissance")),
           full_screen = T
         )
