@@ -146,6 +146,17 @@ server <- function(input, output, session) {
     
     prenom_filtered() %>% group_by(prenom) %>% 
       summarise(valeur = sum(valeur, na.rm = T), .groups = "drop") %>% 
+      arrange(desc(valeur)) %>% pull(prenom)
+    
+  })
+  
+  # Liste des prénoms aléatoire - parmi les 500 plus données
+  liste_prenom_aleatoire <- reactive({
+    
+    req(prenom_filtered())
+    
+    prenom_filtered() %>% group_by(prenom) %>% 
+      summarise(valeur = sum(valeur, na.rm = T), .groups = "drop") %>% 
       arrange(desc(valeur)) %>% slice_head(n = 500) %>% pull(prenom)
     
   })
@@ -153,7 +164,7 @@ server <- function(input, output, session) {
   # Sélection d'un prénom aléatoire
   observeEvent(input$random_prenom, {
     
-    prenoms <- liste_prenom_pop()
+    prenoms <- liste_prenom_aleatoire()
     req(length(prenoms) > 0)
     choix <- sample(prenoms, 1)
     
@@ -202,6 +213,16 @@ server <- function(input, output, session) {
     paste0(format_chiffre(res$best_rang), " (", res$best_annee, ")")
   })
   
+  output$moyenne_attribution <- renderText({
+    req(input$prenom_analyse, input$periode)
+    
+    n_prenom <- get_nombre_naissance(prenom_selected())$n_naiss_total
+    duree <- input$periode[2] - input$periode[1]
+    
+    format_chiffre(n_prenom / duree, 1)
+    
+  })
+  
   ## ---- Géographie ----
   
   # Sélection des données par régions
@@ -235,7 +256,7 @@ server <- function(input, output, session) {
         prenom_selected_region, by = "region"
       ) %>% 
       mutate(
-        n_prenom_region = replace_na(n_prenom_region, 0),
+        #n_prenom_region = replace_na(n_prenom_region, 0),
         part_region = 10000 * n_prenom_region / n_naiss_region,
         part_prenom = 100 * n_prenom_region / sum(n_prenom_region, na.rm = T)
       ) %>% 

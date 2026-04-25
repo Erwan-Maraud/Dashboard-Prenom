@@ -7,12 +7,14 @@ library(ggiraph)
 
 # 2. Analyse régional de la popularité du prénom --------------------------
 
+# Importation des données géographique
+url <- "https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions-avec-outre-mer.geojson"
+carto_region <- st_read(url)
+
+palette_carto <- c("#4575B4", "#91BFDB", "#E0F3F8", "#FEE090", "#FC8D59", "#D73027")
+
 # Affiche la carte interactive pour la popularité des prénoms par régions
 carte_part_prenom_region <- function(nombre_naissance_regions) {
-  
-  # Importation des données géographique
-  url <- "https://raw.githubusercontent.com/gregoiredavid/france-geojson/master/regions-avec-outre-mer.geojson"
-  carto_region <- st_read(url)
   
   # Préparation des données 
   data_carte <- carto_region %>%
@@ -38,8 +40,6 @@ carte_part_prenom_region <- function(nombre_naissance_regions) {
   breaks <- unique(quantile(data_carte$part_region, probs = seq(0, 1, length.out = 7), na.rm = TRUE))
   labels <- paste0(round(head(breaks, -1), 1), " – ", round(tail(breaks, -1), 1))
   levels(data_carte$classe) <- labels
-  #palette <- rev(scales::brewer_pal(palette = "RdYlBu")(length(labels)))
-  # palette <- c("#4575B4", "#91BFDB", "#E0F3F8", "#FEE090", "#FC8D59", "#D73027")
   
   # On construit chaque carte séparément à cause des distances géographiques
   metropole <- data_carte %>% filter(!code %in% c("01", "02", "03", "04", "06"))
@@ -52,7 +52,7 @@ carte_part_prenom_region <- function(nombre_naissance_regions) {
   # Fonction helpers pour la fonction carte_part_prenom_region
   plot_carte_popularite_region <- function(
     data, legend.position = "none", 
-    palette = c("#4575B4", "#91BFDB", "#E0F3F8", "#FEE090", "#FC8D59", "#D73027")
+    palette = palette_carto
     ) {
     ggplot(data = data) + 
       geom_sf_interactive(

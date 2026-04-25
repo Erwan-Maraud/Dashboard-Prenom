@@ -184,6 +184,11 @@ ui <- page_navbar(
             showcase = bsicons::bs_icon("graph-up-arrow")
           ),
           value_box(
+            title = "Moyenne d'attribution par an",
+            value = textOutput("moyenne_attribution"),
+            showcase = bsicons::bs_icon("123")
+          ),
+          value_box(
             title = "Meilleur rang sur la période",
             value = textOutput("best_rang_prenom_analyse"),
             showcase = bsicons::bs_icon("trophy")
