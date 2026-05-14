@@ -60,7 +60,7 @@ mécaniquement les régions les plus peuplées, qui ont davantage de naissances 
 donc plus de chances de dominer en valeur absolue, indépendamment de la popularité 
 réelle du prénom.
 
-![Popularité régionale du prénom Erwan](www/popularite_prenom_erwan_region.png){ width=100% }
+![Popularité régionale du prénom Erwan](www/popularite_prenom_erwan_region.png)
 
 
 ### Fonctionnalités
