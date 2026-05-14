@@ -22,7 +22,7 @@ L’application permet notamment de :
 Entre 2022 et 2024, Gabriel a été le prénom masculin le plus attribué en France, 
 avec près de 14 000 naissances, soit environ 1,4 % des garçons nés sur cette période.
 
-![Top 10 des prénoms attribués entre 2022 et 2024](www/top10_prenoms.png){ width=100% }
+![Top 10 des prénoms attribués entre 2022 et 2024](www/top10_prenoms.png)
 
 <br>
 Avant les années 1960–1970, le nombre de prénoms différents attribués chaque année restait 
@@ -31,7 +31,7 @@ une diversification croissante des choix de prénoms. Cette augmentation s’acc
 au début des années 1990, en lien notamment avec la loi de 1993 qui assouplit les règles 
 relatives au choix des prénoms.
 
-![Évolution du nombre différents de prénoms attribués par an](www/evolution_nombre_prenoms_differents.png){ width=100% }
+![Évolution du nombre différents de prénoms attribués par an](www/evolution_nombre_prenoms_differents.png)
 
 <br>
 L’évolution de la popularité du prénom Hélène en France sur la période 1900–2024 
@@ -43,7 +43,7 @@ constant durant la majeure partie du XXᵉ siècle, avec une moyenne légèremen
 du prénom chute fortement, avec une moyenne d’environ 385 attributions par an entre 1993 et 2024.
 Cette baisse coïncide avec la diffusion de la série "Hélène et les garçons" à partir de 1993.
 
-![Évolution de la popularité du prénom Hélène](www/evolution_popularite_prenom_helene.png){ width=100% }
+![Évolution de la popularité du prénom Hélène](www/evolution_popularite_prenom_helene.png)
 
 <br>
 Parmi l’ensemble des prénoms attribués dans chaque région, le prénom Erwan est 
