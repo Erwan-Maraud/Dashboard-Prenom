@@ -121,13 +121,13 @@ plot_nombre_naissance_sexe <- function(data_filtered, affiche_rang = F) {
       mutate(
         hover_label = paste0("Rang : ", rang, "<br>",
                              "Année : ", periode, "<br>",
-                             "Nombre de naissance : ", format_chiffre(n_naiss))
+                             "Nombre de naissances : ", format_chiffre(n_naiss))
       )} else {
         data_graph <- data_graph %>%
           mutate(
             hover_label = paste0("Sexe : ", sexe, "<br>",
                                  "Année : ", periode, "<br>",
-                                 "Nombre de naissance : ", format_chiffre(n_naiss))
+                                 "Nombre de naissances : ", format_chiffre(n_naiss))
           )
       }
   

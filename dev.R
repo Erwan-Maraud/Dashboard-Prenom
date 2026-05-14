@@ -11,13 +11,12 @@
 # Regrouper prénoms similaires
 # Ajouter signification du prénom 
 # Ajouter option sur l'origine du prénom
-# Carte France avec popularité du prénom 
 
 # A faire :
-# Page info -> insee
-# data managment des accents -> kevin = kévin
 # Readme
 # origine (france, américaine, + évolution par origine)
+
+# Indicateur de popularité : basé sur les quantiles du nombre d'attribution du prénom
 
 # Logique filtrage partie serveur ----------------------------------------------
 periode1 <- 1990
@@ -47,3 +46,4 @@ prenom_selected <- data_filtered %>%
 
 # Développement ----------------------------------------------------------------
 
+length(unique(prenom$prenom))

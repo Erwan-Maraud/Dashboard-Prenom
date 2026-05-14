@@ -4,7 +4,7 @@ ui <- page_navbar(
   title = "Attribution des Prénoms",
   
   id = "nav",
-  selected = "Analyse",
+  selected = "Général",
   
   # ------ THEME ---------------------------------------------------------------
   theme = bs_theme(
@@ -24,6 +24,7 @@ ui <- page_navbar(
   # ------ SIDEBAR -------------------------------------------------------------
   sidebar = sidebar(
     title = "Filtres",
+    id = "sidebar",
     
     ## ---- Période ----
     sliderInput(
@@ -179,7 +180,7 @@ ui <- page_navbar(
             value = textOutput("prenom_affiche"),
           ),
           value_box(
-            title = "Nombre total de naissance sur la période",
+            title = "Nombre total de naissances sur la période",
             value = textOutput("nb_naiss_prenom_analyse"),
             showcase = bsicons::bs_icon("graph-up-arrow")
           ),
@@ -195,7 +196,7 @@ ui <- page_navbar(
           )
         ),
         card(
-          card_header("Évolution du nombre de naissance"),
+          card_header("Évolution du nombre de naissances"),
           card_body(plotlyOutput("plot_evo_prenom")),
           full_screen = T
         )
@@ -212,19 +213,112 @@ ui <- page_navbar(
         )
       ),
       
-      ## ---- Signification ----
-      nav_panel("Signification"),
-      
-      ## ---- Prénoms similaires ----
-      nav_panel("Prénoms similaires"),
-      nav_panel("Tableau de données")
+      # ## ---- Signification ----
+      # nav_panel("Signification"),
+      # 
+      # ## ---- Prénoms similaires ----
+      # nav_panel("Prénoms similaires"),
+      # nav_panel("Tableau de données")
     )
   ),
   
   # ------ INFORMATIONS --------------------------------------------------------
   
   nav_panel(
-    title = "Informations"
+    title = "Informations",
+    
+    layout_column_wrap(
+      width = 1,
+      heights_equal = "row",
+      # INTRO
+      card(
+        card_header("À propos des données"),
+        p(
+          "Les données utilisées dans cette application proviennent de ",
+          tags$b("l’Institut national de la statistique et des études économiques (Insee)"),
+          ". Elles sont issues des bulletins d’état civil de naissance transmis par les communes ",
+          "afin d’alimenter le répertoire national d’identification des personnes physiques (RNIPP)."
+        ),
+        p("Le périmètre couvre la France métropolitaine et les départements-régions d’outre-mer."),
+        
+        p("Source : ", 
+          tags$a(
+          "Insee – Fichier des prénoms",
+          href = "https://www.insee.fr/fr/statistiques/8595130?sommaire=8595113#consulter",
+          target = "_blank"
+          )
+        )
+      ),
+      
+      # ACCORDION
+      accordion(
+        multiple = FALSE,
+        # Couverture
+        accordion_panel(
+          "Couverture et qualité des données",
+          p("Les données couvrent la période de 1900 à 2024."),
+          tags$ul(
+            tags$li("L’exhaustivité n’est pas garantie avant 1946"),
+            tags$li("Des erreurs de saisie peuvent subsister"),
+            tags$li("Les données peuvent être corrigées dans le temps"),
+            tags$li("Les fréquences ne sont pas parfaitement exactes")
+          )
+        ),
+        
+        # Traitement
+        accordion_panel(
+          "Traitement des prénoms",
+          tags$ul(
+            tags$li("Seul le premier prénom est conservé"),
+            tags$li("Suppression des anomalies (ex : 'ANONYME', espaces incorrects)"),
+            tags$li("Conservation des accents et apostrophes dans la mesure du possible")
+          ),
+          p("Certains prénoms composés peuvent être reconstitués automatiquement."),
+          p(tags$i("Exemple : 'N DEYE' peut être interprété comme un prénom composé."))
+        ),
+        
+        # Statistiques
+        accordion_panel(
+          "Diffusion des statistiques",
+          tags$ul(
+            tags$li("Données disponibles au niveau national, régional et départemental"),
+            tags$li("Nombre de naissances par année et par sexe"),
+            tags$li("Valeurs arrondies au multiple de 5")
+          ),
+          p("Cet arrondi vise à limiter les fluctuations faibles et à respecter le secret statistique.")
+        ),
+        
+        # Données manquantes
+        accordion_panel(
+          "Données non diffusées",
+          p("Un prénom est diffusé uniquement s’il apparaît au moins 3 fois."),
+          tags$ul(
+            tags$li("par année (niveau national)"),
+            tags$li("par année et zone (région ou département)")
+          ),
+          p(
+            tags$b("Important : "),
+            "l’absence d’un prénom ne signifie pas qu’il n’existe pas, mais qu’il est trop rare."
+          )
+        ),
+        
+        # Choix des prénoms
+        accordion_panel(
+          "Choix des prénoms",
+          p("Les parents choisissent librement les prénoms depuis 1993."),
+          p("L’officier d’état civil peut toutefois alerter le procureur si le prénom :"),
+          tags$ul(
+            tags$li("nuit à l’intérêt de l’enfant"),
+            tags$li("porte atteinte à un tiers")
+          )
+        ),
+        
+        # Écriture
+        accordion_panel(
+          "Particularités d’écriture",
+          p("Les prénoms sont adaptés à l’alphabet français.")
+        )
+      )
+    )
   )
-  
 )

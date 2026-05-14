@@ -1,6 +1,15 @@
 
 server <- function(input, output, session) {
   
+  # Gestion dynamique de l'ouverture de la sidebar en fonction de la page
+  observeEvent(input$nav, {
+    if (input$nav == "Informations") {
+      toggle_sidebar(id = "sidebar",  open = FALSE)
+    } else {
+      toggle_sidebar(id = "sidebar",  open = TRUE)
+    }
+  })
+  
   # Choix dynamique du département en fonction de la région sélectionné
   observeEvent(input$region, {
     
@@ -273,6 +282,6 @@ server <- function(input, output, session) {
   
   # ------ TESTS ---------------------------------------------------------------
   
-
+  
 }
 
