@@ -6,7 +6,7 @@ des prénoms attribués en France depuis 1900.
 
 
 L’application propose des visualisations interactives, des indicateurs statistiques 
-et des analyses géographiques à partir des données ouvertes de l’Insee.
+et des analyses géographiques à partir des données de l’Insee.
 
 ### Aperçu
 
